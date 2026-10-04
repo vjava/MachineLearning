@@ -1,14 +1,43 @@
 name: CI/CD Pipeline
-on: [push, pull_request]
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    # 1. GitHub repository ka code checkout karein
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Python environment setup karein (Python 3.10)
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-    - run: pip install -r requirements.txt
-    - run: python train.py
-    - name: Run tests with PYTHONPATH
+
+    # 3. Dependencies (requirements.txt) install karein
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # 4. Model train karein aur artifacts generate karein
+    - name: Train ML Model
+      run: python train.py
+
+    # 5. Pytest run karein (PYTHONPATH set karke taaki module error na aaye)
+    - name: Run Pytest tests
       run: PYTHONPATH=. pytest tests/
+
+    # 6. Optional: Model artifacts (.pkl files) ko GitHub Actions par save/upload karein
+    - name: Upload Model Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: model-artifacts
+        path: artifacts/
