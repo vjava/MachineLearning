@@ -18,7 +18,7 @@ def main():
     os.makedirs("artifacts", exist_ok=True)
     joblib.dump(model, "artifacts/model.pkl")
     joblib.dump(scaler, "artifacts/scaler.pkl")
-    print("Success! Model and scaler saved in artifacts/ directory.")
+    print("Success!  Model and scaler saved in artifacts/ directory.")
 
 if __name__ == "__main__":
     main()
